@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Open Verse – Digital Marketing Solutions</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{navy:{50:'#EFF3FA',100:'#D9E2F2',200:'#B3C5E5',300:'#8DA8D8',400:'#5A82C4',500:'#1E3A6E',600:'#172E5A',700:'#0F2345',800:'#0B1A35',900:'#071225'},accent:{300:'#FDBA74',400:'#FB923C',500:'#F97316',600:'#EA580C',700:'#C2410C'},surface:{50:'#FFFFFF',100:'#F8FAFC',200:'#F1F5F9',300:'#E2E8F0'}},fontFamily:{sans:['Inter','system-ui','sans-serif'],display:['Space Grotesk','Inter','sans-serif']}}}}
+</script>
+<style>
+.rv{opacity:0;transform:translateY(24px);transition:opacity .55s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1)}
+.rv.vis{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.07s}.rd2{transition-delay:.14s}.rd3{transition-delay:.21s}.rd4{transition-delay:.28s}.rd5{transition-delay:.35s}.rd6{transition-delay:.42s}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.mquee{animation:none!important}}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:#f1f5f9}::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:9px}
+.gtxt{background:linear-gradient(135deg,#F97316,#FB923C,#FDBA74);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.clift{transition:transform .28s ease,box-shadow .28s ease}.clift:hover{transform:translateY(-4px);box-shadow:0 16px 36px -10px rgba(15,35,69,.13)}
+.sovl{background:linear-gradient(to top,rgba(15,35,69,.9) 0%,rgba(15,35,69,.5) 50%,transparent 100%)}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.mquee{animation:mq 20s linear infinite}.mquee:hover{animation-play-state:paused}
+@keyframes wp{0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.4)}50%{box-shadow:0 0 0 12px rgba(37,211,102,0)}}
+.waf{animation:wp 2s ease-in-out infinite}
+*:focus-visible{outline:2px solid #F97316;outline-offset:2px;border-radius:4px}
+.sv{font-family:'Space Grotesk',sans-serif;font-weight:700;line-height:1}
+.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+</style>
+</head>
+<body class="bg-surface-50 text-gray-800 font-sans antialiased overflow-x-hidden">
+<div id="root"></div>
+<script type="text/babel">
+const{useState,useEffect,useCallback,useMemo,memo}=React;
+
+/* ══════════ DATA — SINGLE SOURCE OF TRUTH ══════════ */
+const siteData={
+announcement:{text:"Join our premium Skool community & start earning from today.",linkText:"Learn more",linkUrl:"#"},
+navbar:{logo:"Open Verse",links:[{label:"Home",hash:"home"},{label:"About",hash:"about"},{label:"Services",hash:"services"},{label:"Contact",hash:"contact"}],cta:{text:"Get Started",url:"#contact"}},
+hero:{preheading:"Welcome to",heading:"Digital Marketing Solutions That Fuel Your Business Growth",description:"We help businesses build a strong foundation, improve online visibility, and generate leads that drive revenue and business growth",cta:{text:"Get Started Today",url:"#contact"},rating:{value:"4.8",label:"From 1251+ reviews"},clients:{value:"1251+",label:"Worldwide clients"},cards:[{type:"image",src:"https://picsum.photos/seed/ov-h1/400/300.jpg",alt:"Digital marketing workspace"},{type:"tag",text:"SEO",color:"navy"},{type:"tag",text:"SEM",color:"accent"},{type:"tag",text:"Social Media Marketing",color:"navy"},{type:"stat",value:"95%",label:"our customers 3X their business growth & revenue!"}]},
+trustedBy:{title:"Trusted by Leading Brands",subtitle:"We've Successfully Served",logos:[{name:"TechCorp",bg:"#0F2345",fg:"#fff"},{name:"GrowthIO",bg:"#F97316",fg:"#fff"},{name:"NexaBrand",bg:"#1E3A6E",fg:"#fff"},{name:"ScaleUp",bg:"#172E5A",fg:"#FB923C"},{name:"Vantage",bg:"#FB923C",fg:"#0F2345"},{name:"PulseMedia",bg:"#0B1A35",fg:"#fff"},{name:"Axiom",bg:"#1E3A6E",fg:"#FDBA74"},{name:"BrightPath",bg:"#F97316",fg:"#fff"}]},
+about:{preheading:"Meet Your Growth Partners",heading:"We Make Your Business Growth a Reality",description:"We help your business to build and scale using SEO, SEM, social media marketing, and sales funnel services. Our strategies are customized as per your audience, connecting your brand with the right people. Whether you want to:",bullets:["Improve Branding & Visibility","Build Brand Authority","Build Consistent Lead Flow","Business Scaling & Automation"],cta:{text:"Learn More About Us",url:"#about"},image:"https://picsum.photos/seed/ov-ab/700/525.jpg",mission:"To empower businesses worldwide with data-driven digital marketing strategies that deliver measurable results and sustainable growth.",vision:"To become the most trusted digital growth partner for ambitious brands across every industry and continent.",values:["Transparency & Integrity","Data-Driven Decisions","Client-First Approach","Continuous Innovation"]},
+stats:[{value:"12+",label:"Years of experience"},{value:"8M+",label:"USD Generated for clients so far"},{value:"1,200+",label:"Brands Trust Us",profile:{name:"Haroon Ahmed",role:"Business Coach & CEO",image:"https://randomuser.me/api/portraits/men/22.jpg"}},{value:"100%",label:"Results Guaranteed"},{value:"10+",label:"Team members"}],
+services:{preheading:"Our Most Popular Services That Transform Your Business",heading:"Here are some popular services that'll take your business to new heights!",items:[{title:"Branding",description:"Branding builds trust and makes your business stand out. We craft compelling brand identities that resonate with your target audience and differentiate you from competitors.",image:"https://picsum.photos/seed/ov-s1/500/350.jpg",icon:"palette"},{title:"Design & Development",description:"Get user-friendly websites and funnels that drive engagement and build a consistent lead flow. From landing pages to full web applications.",image:"https://picsum.photos/seed/ov-s2/500/350.jpg",icon:"code"},{title:"Lead Generation",description:"Get consistent flow of leads through various platforms. To increase revenue & business growth through targeted strategies.",image:"https://picsum.photos/seed/ov-s3/500/350.jpg",icon:"zap"},{title:"Designing & Editing",description:"With our designing & editing services, we help your business to attract, connect, and convert your audience with stunning visuals.",image:"https://picsum.photos/seed/ov-s4/500/350.jpg",icon:"image"},{title:"Business Coaching & Consultation",description:"With our business coaching services, get actionable strategies and guidance to build your dream business from the ground up.",image:"https://picsum.photos/seed/ov-s5/500/350.jpg",icon:"briefcase"},{title:"Workshops & Trainings",description:"Empower your team with the skills and mindset needed to drive growth and success in the digital landscape.",image:"https://picsum.photos/seed/ov-s6/500/350.jpg",icon:"book"}],features:[{icon:"users",title:"Experienced Professionals",description:"We've professionals with years of expertise to help your business grow"},{icon:"target",title:"Results-Driven Strategies",description:"Our tailored solutions are prepared to deliver results for your business growth"},{icon:"layers",title:"End To End Solutions",description:"From branding to lead generation and business scaling, we provide all services"}],process:[{step:"01",title:"Discovery & Audit",description:"We analyze your current digital presence, identify gaps, and understand your business goals."},{step:"02",title:"Strategy & Planning",description:"We craft a custom roadmap with clear milestones, KPIs, and actionable tactics."},{step:"03",title:"Execute & Optimize",description:"Our team implements the strategy with precision, continuously optimizing for peak performance."}]},
+team:{preheading:"Our Team",heading:"Meet the Experts Behind Your Success",members:[{name:"Muhammad Hamza Nasir",role:"Meta Ads Expert",image:"https://randomuser.me/api/portraits/men/32.jpg"},{name:"Mubashir Ali",role:"Content Strategist",image:"https://randomuser.me/api/portraits/men/75.jpg"},{name:"Umair Afzal",role:"GHL & System Specialist",image:"https://randomuser.me/api/portraits/men/45.jpg"},{name:"Haroon Ahmed",role:"Business Coach & CEO",image:"https://randomuser.me/api/portraits/men/22.jpg"},{name:"Khalid Khan",role:"Director Sales & Revenue",image:"https://randomuser.me/api/portraits/men/51.jpg"},{name:"Muhammad Huraira",role:"Director Delivery & Operations",image:"https://randomuser.me/api/portraits/men/38.jpg"},{name:"Asad Masood",role:"Social Media Manager",image:"https://randomuser.me/api/portraits/men/67.jpg"}]},
+testimonials:{heading:"See What Our Clients Say About Us",items:[{text:"Thanks to Bilal and his team for an excellent job. I was very pleased with his first approach to how he audited my website to see what I needed. The team revamped and redesigned my website, and I really love it! You guys are the best, and I will be back! Thank you for your patience and understanding.",name:"HALLIE RUSSELL",role:"Founder At Junitas",avatar:"https://api.dicebear.com/7.x/adventurer/svg?seed=Hallie"},{text:"\"Fast Respond\" Great work done for my store speed is up to scratch and would definitely recommend will use again without know hesitation very professional and work was completed on time thank so much for the work completed.",name:"KIMA ROSS",role:"Founder at Amik Wigs",avatar:"https://api.dicebear.com/7.x/adventurer/svg?seed=Kima"},{text:"\"Amazing services\" A big thank you to this excellent team, quick, safe and professional, Mr. Bilal Ahmed from Open Verse, everything was perfect. I highly recommend you guys!",name:"MAHASSA",role:"Founder at Mahassa Arts",avatar:"https://api.dicebear.com/7.x/adventurer/svg?seed=Mahassa"},{text:"It was incredible working with Bilal & his team. There reporting was outstanding in relation to the timeline of the SEO project we took on for the last 6 months. Super professional with their deliverables exceptionally. Top Notch Content Marketing & SEO were all satisfactory and result-oriented.",name:"Muhammad Faisal Riaz",role:"Marketing Manager, FARMRY",avatar:"https://api.dicebear.com/7.x/adventurer/svg?seed=Faisal"},{text:"\"We Are Satisfied\" Bilal Ahmed from Open Verse is the best! I had a wonderful experience working with him. He patiently walked me through the construction of my website and all the complexities. He's very knowledgeable and competent and very fair in pricing as well.",name:"GREGORY GRANT",role:"CEO Tha Hoodie",avatar:"https://api.dicebear.com/7.x/adventurer/svg?seed=Gregory"}]},
+footer:{description:"Open Verse – Empowering Businesses, Driving Revenue, Delivering Results.",services:["Graphics Designing & Video Editing","Search Engine Optimization (SEO)","Search Engine Marketing (SEM)","Social Media Marketing","Web Development","Branding"],contact:{email:"contact@openverse.com",phone:"+92335957063",address:"Open Verse, Nafees Chowk, Attock City, 43600"},social:[{name:"Facebook",url:"#"},{name:"Linkedin",url:"#"},{name:"Instagram",url:"#"}],copyright:"Copyright © 2025 Open Verse, All rights reserved.",whatsapp:{url:"https://wa.me/923335957063",label:"WhatsApp Live Chat"}}
+};
+
+/* ══════════ HOOKS ══════════ */
+function useScrollY(){const[y,sy]=useState(0);useEffect(()=>{let r,t=()=>{cancelAnimationFrame(r);r=requestAnimationFrame(()=>sy(window.scrollY))};window.addEventListener("scroll",t,{passive:true});return()=>{window.removeEventListener("scroll",t);cancelAnimationFrame(r)}},[]);return y}
+
+function useRouter(){const[p,sp]=useState(()=>window.location.hash.slice(1)||"home");useEffect(()=>{const h=()=>{sp(window.location.hash.slice(1)||"home");window.scrollTo({top:0,behavior:"instant"})};window.addEventListener("hashchange",h);return()=>window.removeEventListener("hashchange",h)},[]);return p}
+
+function useReveal(){useEffect(()=>{const o=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting){x.target.classList.add("vis");o.unobserve(x.target)}})},{threshold:.06,rootMargin:"0px 0px -30px 0px"});const obs=()=>document.querySelectorAll(".rv:not(.vis)").forEach(el=>o.observe(el));obs();const m=new MutationObserver(obs);m.observe(document.getElementById("root"),{childList:true,subtree:true});return()=>{o.disconnect();m.disconnect()}},[])}
+
+/* ══════════ ICON ══════════ */
+const I=memo(function Icon({n,s=20,c='',sw=2}){
+const p={xmlns:"http://www.w3.org/2000/svg",width:s,height:s,viewBox:"0 0 24 24",fill:"none",stroke:"currentColor",strokeWidth:sw,strokeLinecap:"round",strokeLinejoin:"round",className:c};
+const icons={
+star:<svg {...p}><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" fill="currentColor" stroke="none"/></svg>,
+check:<svg {...p}><path d="M20 6L9 17l-5-5"/></svg>,
+arrowR:<svg {...p}><path d="M5 12h14M12 5l7 7-7 7"/></svg>,
+menu:<svg {...p}><path d="M4 6h16M4 12h16M4 18h16"/></svg>,
+x:<svg {...p}><path d="M18 6L6 18M6 6l12 12"/></svg>,
+quote:<svg {...p}><path fill="currentColor" stroke="none" d="M11.3 2.5c-1.4.7-2.5 1.6-3.3 2.8S6.5 7.8 6.5 9.5c1-.3 1.8-.2 2.5.3s1 1.3 1 2.2c0 1-.3 1.8-1 2.3s-1.5.8-2.5.7c-1.1 0-2-.4-2.7-1.2S2.5 12 2.5 10.5c0-2.4.8-4.5 2.5-6.3S9.3 1.5 11.3.5l.1 2zm10 0c-1.4.7-2.5 1.6-3.3 2.8S16.5 7.8 16.5 9.5c1-.3 1.8-.2 2.5.3s1 1.3 1 2.2c0 1-.3 1.8-1 2.3s-1.5.8-2.5.7c-1.1 0-2-.4-2.7-1.2S12.5 12 12.5 10.5c0-2.4.8-4.5 2.5-6.3S19.3 1.5 21.3.5l.1 2z"/></svg>,
+users:<svg {...p}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>,
+target:<svg {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+layers:<svg {...p}><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>,
+mail:<svg {...p}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
+phone:<svg {...p}><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.11 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>,
+mapPin:<svg {...p}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+whatsapp:<svg {...p}><path fill="currentColor" stroke="none" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
+facebook:<svg {...p}><path fill="currentColor" stroke="none" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>,
+linkedin:<svg {...p}><path fill="currentColor" stroke="none" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>,
+instagram:<svg {...p}><path fill="currentColor" stroke="none" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>,
+send:<svg {...p}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+palette:<svg {...p}><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 011.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>,
+code:<svg {...p}><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>,
+zap:<svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+image:<svg {...p}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
+briefcase:<svg {...p}><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>,
+book:<svg {...p}><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>,
+chevronR:<svg {...p}><polyline points="9 18 15 12 9 6"/></svg>,
+shield:<svg {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+heart:<svg {...p}><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+};
+return icons[n]||null;
+});
+
+/* ══════════ SHARED COMPONENTS ══════════ */
+const AnnouncementBar=memo(function({data}){
+const[o,so]=useState(true);
+if(!o)return null;
+return(<div className="bg-gradient-to-r from-navy-700 via-navy-500 to-navy-700 text-white text-center py-2 px-4 relative">
+<p className="text-sm font-medium">{data.text} <a href={data.linkUrl} className="underline underline-offset-2 font-semibold hover:text-accent-300 transition-colors">{data.linkText}</a></p>
+<button onClick={()=>so(false)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors" aria-label="Close"><I n="x" s={14}/></button>
+</div>)});
+
+const Navbar=memo(function({data,page}){
+const sy=useScrollY();const[mo,smo]=useState(false);const bl=sy>20;
+return(<nav className={`sticky top-0 z-50 w-full transition-all duration-200 ${bl?'bg-white/80 backdrop-blur-xl shadow-sm shadow-navy-700/5':'bg-white'}`} role="navigation" aria-label="Main">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><div className="flex items-center justify-between h-16">
+<a href="#home" className="font-display font-bold text-xl text-navy-700 tracking-tight">{data.logo}</a>
+<div className="hidden lg:flex items-center gap-8">{data.links.map(l=>(<a key={l.hash} href={`#${l.hash}`} className={`text-sm font-medium transition-colors relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-accent-500 after:transition-all hover:after:w-full ${page===l.hash?'text-navy-700 after:w-full':'text-gray-500 hover:text-navy-700'}`}>{l.label}</a>))}</div>
+<div className="flex items-center gap-3">
+<a href={data.cta.url} className="hidden sm:inline-flex items-center gap-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:from-accent-600 hover:to-accent-700 transition-all shadow-lg shadow-accent-500/20">{data.cta.text}<I n="arrowR" s={15}/></a>
+<button className="lg:hidden p-2 rounded-lg hover:bg-surface-100 transition-colors" onClick={()=>smo(!mo)} aria-label="Toggle menu" aria-expanded={mo}><I n={mo?"x":"menu"} s={22} c="text-navy-700"/></button>
+</div></div></div>
+<div className={`lg:hidden overflow-hidden transition-all duration-300 ${mo?'max-h-80 border-t border-surface-200':'max-h-0'}`}>
+<div className="px-4 py-4 space-y-1 bg-white">{data.links.map(l=>(<a key={l.hash} href={`#${l.hash}`} className={`block px-4 py-2.5 text-sm font-medium rounded-lg transition-colors ${page===l.hash?'text-navy-700 bg-surface-100':'text-gray-500 hover:text-navy-700 hover:bg-surface-100'}`} onClick={()=>smo(false)}>{l.label}</a>))}
+<a href={data.cta.url} className="block text-center mt-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl" onClick={()=>smo(false)}>{data.cta.text}</a></div></div>
+</nav>)});
+
+const Footer=memo(function({data}){
+const si={Facebook:"facebook",Linkedin:"linkedin",Instagram:"instagram"};
+return(<footer className="bg-navy-800 text-white" role="contentinfo">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
+<div className="sm:col-span-2 lg:col-span-1"><p className="font-display font-bold text-xl mb-4">Open Verse</p><p className="text-sm text-white/45 leading-relaxed">{data.description}</p></div>
+<div><h3 className="text-xs font-bold uppercase tracking-widest text-white/70 mb-5">Services</h3><ul className="space-y-2.5">{data.services.map((s,i)=><li key={i}><a href="#services" className="text-sm text-white/45 hover:text-accent-400 transition-colors">{s}</a></li>)}</ul></div>
+<div><h3 className="text-xs font-bold uppercase tracking-widest text-white/70 mb-5">Contact Us</h3><ul className="space-y-3">
+<li className="flex items-start gap-2.5"><I n="mail" s={15} c="text-accent-400 mt-0.5 flex-shrink-0"/><a href={`mailto:${data.contact.email}`} className="text-sm text-white/45 hover:text-accent-400 transition-colors break-all">{data.contact.email}</a></li>
+<li className="flex items-start gap-2.5"><I n="phone" s={15} c="text-accent-400 mt-0.5 flex-shrink-0"/><a href={`tel:${data.contact.phone.replace(/\s/g,'')}`} className="text-sm text-white/45 hover:text-accent-400 transition-colors">{data.contact.phone}</a></li>
+<li className="flex items-start gap-2.5"><I n="mapPin" s={15} c="text-accent-400 mt-0.5 flex-shrink-0"/><span className="text-sm text-white/45 leading-relaxed">{data.contact.address}</span></li>
+</ul></div>
+<div><h3 className="text-xs font-bold uppercase tracking-widest text-white/70 mb-5">Follow Us</h3>
+<div className="flex items-center gap-3">{data.social.map((s,i)=><a key={i} href={s.url} className="w-10 h-10 rounded-xl bg-white/8 flex items-center justify-center hover:bg-accent-500 transition-colors" aria-label={s.name}><I n={si[s.name]||"facebook"} s={17}/></a>)}</div>
+<div className="mt-6"><a href={data.whatsapp.url} className="inline-flex items-center gap-2 bg-green-500 text-white text-sm font-semibold px-5 py-2.5 rounded-xl hover:bg-green-600 transition-colors"><I n="whatsapp" s={17}/>{data.whatsapp.label}</a></div>
+</div></div></div>
+<div className="border-t border-white/8"><div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5"><p className="text-xs text-white/35 text-center">{data.copyright}</p></div></div>
+</footer>)});
+
+const WAFloat=memo(function({url}){return(<a href={url} target="_blank" rel="noopener noreferrer" className="waf fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-xl hover:bg-green-600 transition-colors" aria-label="Chat on WhatsApp"><I n="whatsapp" s={27}/></a>)});
+
+function PageHero({title,subtitle,bg}){
+return(<div className="relative bg-navy-800 py-20 lg:py-28 overflow-hidden">
+<div className="absolute inset-0 opacity-5" style={{backgroundImage:'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',backgroundSize:'28px 28px'}}/>
+{bg&&<img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover opacity-15" loading="lazy"/>}
+<div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+<h1 className="rv font-display text-[clamp(2rem,5vw,3.25rem)] font-bold text-white leading-tight tracking-tight">{title}</h1>
+{subtitle&&<p className="rv rd1 mt-4 text-lg text-white/60 max-w-2xl mx-auto">{subtitle}</p>}
+</div></div>)}
+
+/* ══════════ HOME PAGE ══════════ */
+function HomePage({d}){
+const tc=d.hero.cards.filter(c=>c.type==='tag'),sc=d.hero.cards.filter(c=>c.type==='stat'),ic=d.hero.cards.filter(c=>c.type==='image');
+const dl=[...d.trustedBy.logos,...d.trustedBy.logos];
+const tl=[...d.testimonials.items,...d.testimonials.items];
+return(<div>
+{/* Hero */}
+<section className="relative overflow-hidden bg-surface-50 pt-12 pb-16 lg:pt-20 lg:pb-24">
+<div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-bl from-accent-100/40 via-accent-50/20 to-transparent rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none"/>
+<div className="absolute bottom-0 left-0 w-[350px] h-[350px] bg-gradient-to-tr from-navy-50/60 to-transparent rounded-full translate-y-1/2 -translate-x-1/3 pointer-events-none"/>
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+<div className="max-w-xl">
+<span className="rv inline-block text-sm font-semibold text-accent-600 bg-accent-50 px-4 py-1.5 rounded-full mb-5">{d.hero.preheading}</span>
+<h1 className="rv rd1 font-display text-[clamp(2rem,5vw,3.5rem)] font-bold text-navy-800 leading-[1.12] tracking-tight mb-5">{d.hero.heading}</h1>
+<p className="rv rd2 text-base lg:text-lg text-gray-500 leading-relaxed mb-8">{d.hero.description}</p>
+<a href={d.hero.cta.url} className="rv rd3 inline-flex items-center gap-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white font-semibold px-7 py-3.5 rounded-xl hover:from-accent-600 hover:to-accent-700 transition-all shadow-lg shadow-accent-500/20 hover:shadow-accent-500/35 hover:-translate-y-0.5">{d.hero.cta.text}<I n="arrowR" s={18}/></a>
+<div className="rv rd4 flex flex-wrap items-center gap-5 mt-8">
+<div className="flex items-center gap-1.5">{[1,2,3,4,5].map(i=><I key={i} n="star" s={15} c="text-accent-500"/>)}</div>
+<span className="text-sm font-bold text-navy-700">{d.hero.rating.value}</span>
+<span className="text-xs text-gray-400">{d.hero.rating.label}</span>
+<div className="w-px h-4 bg-surface-300 hidden sm:block"/>
+<span className="text-sm font-semibold text-navy-700">{d.hero.clients.value}</span>
+<span className="text-xs text-gray-400">{d.hero.clients.label}</span>
+</div>
+</div>
+<div className="rv rd3"><div className="grid grid-cols-2 gap-3 lg:gap-4">
+{ic.map((c,i)=><div key={`i${i}`} className="rounded-2xl overflow-hidden shadow-lg"><img src={c.src} alt={c.alt} className="w-full aspect-[4/3] object-cover" loading="lazy"/></div>)}
+{tc.map((c,i)=><div key={`t${i}`} className={`rounded-2xl p-4 lg:p-5 flex items-center justify-center text-center shadow-md ${c.color==='accent'?'bg-gradient-to-br from-accent-500 to-accent-600 text-white':'bg-white text-navy-700 border border-surface-200'}`}><span className="text-sm lg:text-base font-bold">{c.text}</span></div>)}
+{sc.map((c,i)=><div key={`s${i}`} className="col-span-2 rounded-2xl bg-gradient-to-r from-navy-700 to-navy-500 text-white p-5 lg:p-6 shadow-lg"><div className="flex items-center gap-4"><span className="sv text-3xl lg:text-4xl gtxt">{c.value}</span><p className="text-sm text-white/75 leading-snug">{c.label}</p></div></div>)}
+</div></div>
+</div></div></section>
+
+{/* Trusted By */}
+<section className="py-12 lg:py-16 bg-surface-100 border-y border-surface-200 overflow-hidden">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 text-center">
+<p className="rv text-sm font-semibold text-accent-600 uppercase tracking-wider mb-1">{d.trustedBy.title}</p>
+<p className="rv rd1 text-lg font-bold text-navy-700">{d.trustedBy.subtitle}</p></div>
+<div className="relative"><div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-surface-100 to-transparent z-10 pointer-events-none"/><div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-surface-100 to-transparent z-10 pointer-events-none"/>
+<div className="mquee flex items-center gap-8 lg:gap-12 w-max">{dl.map((l,i)=><div key={i} className="flex-shrink-0 flex items-center justify-center h-12 px-6 lg:px-8 rounded-xl bg-white shadow-sm border border-surface-200"><span className="text-sm lg:text-base font-bold tracking-tight whitespace-nowrap" style={{color:l.fg,backgroundColor:l.bg,padding:'5px 14px',borderRadius:'8px'}}>{l.name}</span></div>)}</div></div></section>
+
+{/* About Preview */}
+<section className="py-16 lg:py-24 bg-surface-50">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+<div className="rv"><div className="rounded-3xl overflow-hidden shadow-2xl shadow-navy-700/8"><img src={d.about.image} alt="Business growth" className="w-full aspect-[4/3] object-cover" loading="lazy"/></div></div>
+<div>
+<p className="rv text-sm font-semibold text-accent-600 uppercase tracking-wider mb-2">{d.about.preheading}</p>
+<h2 className="rv rd1 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-navy-800 leading-tight tracking-tight mb-5">{d.about.heading}</h2>
+<p className="rv rd2 text-gray-500 leading-relaxed mb-6">{d.about.description}</p>
+<ul className="rv rd3 space-y-3 mb-8">{d.about.bullets.map((b,i)=><li key={i} className="flex items-start gap-3"><span className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-full bg-accent-50 flex items-center justify-center"><I n="check" s={13} c="text-accent-600" sw={3}/></span><span className="text-gray-700 font-medium">{b}</span></li>)}</ul>
+<div className="rv rd4 flex flex-wrap gap-3">
+<a href="#about" className="inline-flex items-center gap-2 bg-gradient-to-r from-navy-700 to-navy-500 text-white font-semibold px-7 py-3.5 rounded-xl hover:from-navy-800 hover:to-navy-600 transition-all shadow-lg shadow-navy-700/15 hover:-translate-y-0.5">Learn More<I n="arrowR" s={18}/></a>
+<a href="#services" className="inline-flex items-center gap-2 border-2 border-navy-200 text-navy-700 font-semibold px-7 py-3.5 rounded-xl hover:border-navy-400 transition-all hover:-translate-y-0.5">Our Services<I n="chevronR" s={18}/></a>
+</div>
+</div></div></div></section>
+
+{/* Stats */}
+<section className="py-16 lg:py-24 bg-gradient-to-br from-navy-800 via-navy-700 to-navy-800 relative overflow-hidden">
+<div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage:'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',backgroundSize:'30px 30px'}}/>
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4 lg:gap-5">
+{d.stats.map((s,i)=><div key={i} className={`rv rd${Math.min(i+1,6)} rounded-2xl p-6 text-center ${s.profile?'bg-white/10 backdrop-blur-sm border border-white/12':'bg-white/5 border border-white/8'}`}>
+{s.profile&&<div className="flex justify-center mb-3"><img src={s.profile.image} alt={s.profile.name} className="w-14 h-14 rounded-full object-cover ring-2 ring-accent-400/40" loading="lazy"/></div>}
+<div className="sv text-3xl lg:text-4xl text-white mb-1.5">{s.value}</div>
+<p className="text-sm text-white/55 leading-snug">{s.label}</p>
+{s.profile&&<p className="mt-1.5 text-xs text-accent-300 font-semibold">{s.profile.name}</p>}
+</div>)}
+</div></div></section>
+
+{/* Services Preview */}
+<section className="py-16 lg:py-24 bg-surface-50">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div className="text-center max-w-2xl mx-auto mb-12"><p className="rv text-sm font-semibold text-accent-600 uppercase tracking-wider mb-2">{d.services.preheading}</p><h2 className="rv rd1 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-navy-800 leading-tight tracking-tight">{d.services.heading}</h2></div>
+<div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6 mb-10">
+{d.services.items.slice(0,3).map((s,i)=><div key={i} className={`rv rd${Math.min(i+1,6)} group relative rounded-2xl overflow-hidden shadow-lg clift cursor-pointer min-h-[300px]`}>
+<img src={s.image} alt={s.title} className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy"/>
+<div className="sovl absolute inset-0"/><div className="relative z-10 h-full flex flex-col justify-end p-6 lg:p-8">
+<h3 className="text-lg lg:text-xl font-bold text-white mb-2">{s.title}</h3>
+<p className="text-sm text-white/70 leading-relaxed line-clamp-3">{s.description}</p>
+</div></div>)}
+</div>
+<div className="rv text-center"><a href="#services" className="inline-flex items-center gap-2 bg-gradient-to-r from-navy-700 to-navy-500 text-white font-semibold px-7 py-3.5 rounded-xl hover:from-navy-800 hover:to-navy-600 transition-all shadow-lg shadow-navy-700/15 hover:-translate-y-0.5">View All Services<I n="arrowR" s={18}/></a></div>
+</div></section>
+
+{/* Team Preview */}
+<section className="py-16 lg:py-24 bg-surface-100">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div className="text-center max-w-2xl mx-auto mb-12"><p className="rv text-sm font-semibold text-accent-600 uppercase tracking-wider mb-2">{d.team.preheading}</p><h2 className="rv rd1 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-navy-800 leading-tight tracking-tight">{d.team.heading}</h2></div>
+<div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6 mb-10">
+{d.team.members.slice(0,4).map((m,i)=><div key={i} className={`rv rd${Math.min(i+1,6)} group bg-white rounded-2xl overflow-hidden shadow-md border border-surface-200 clift`}>
+<div className="relative overflow-hidden"><img src={m.image} alt={m.name} className="w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy"/>
+<div className="absolute inset-0 bg-gradient-to-t from-navy-800/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"/></div>
+<div className="p-4 text-center"><h3 className="font-bold text-navy-800 text-sm leading-snug">{m.name}</h3><p className="text-xs text-gray-400 mt-1">{m.role}</p></div></div>)}
+</div>
+<div className="rv text-center"><a href="#about" className="inline-flex items-center gap-2 border-2 border-navy-200 text-navy-700 font-semibold px-7 py-3.5 rounded-xl hover:border-navy-400 transition-all hover:-translate-y-0.5">Meet Full Team<I n="arrowR" s={18}/></a></div>
+</div></section>
+
+{/* Testimonials */}
+<section className="py-16 lg:py-24 bg-surface-50 overflow-hidden">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center"><h2 className="rv font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-navy-800 leading-tight tracking-tight">{d.testimonials.heading}</h2></div>
+<div className="relative"><div className="absolute left-0 top-0 bottom-0 w-14 lg:w-24 bg-gradient-to-r from-surface-50 to-transparent z-10 pointer-events-none"/><div className="absolute right-0 top-0 bottom-0 w-14 lg:w-24 bg-gradient-to-l from-surface-50 to-transparent z-10 pointer-events-none"/>
+<div className="mquee flex gap-6 w-max" style={{animationDuration:'45s'}}>{tl.map((t,i)=><div key={i} className="w-[340px] sm:w-[380px] lg:w-[420px] flex-shrink-0 bg-white rounded-2xl p-6 lg:p-8 shadow-md border border-surface-200 clift">
+<div className="flex items-center gap-3 mb-4"><img src={t.avatar} alt={t.name} className="w-12 h-12 rounded-full bg-surface-100" loading="lazy"/><div><p className="text-sm font-bold text-navy-800">{t.name}</p><p className="text-xs text-gray-400">{t.role}</p></div></div>
+<I n="quote" s={22} c="text-accent-200 mb-3"/>
+<p className="text-sm text-gray-600 leading-relaxed line-clamp-3">{t.text}</p>
+</div>)}</div></div></section>
+
+{/* CTA Banner */}
+<section className="py-16 lg:py-20 bg-gradient-to-r from-accent-500 via-accent-600 to-accent-700 relative overflow-hidden">
+<div className="absolute inset-0 opacity-10" style={{backgroundImage:'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',backgroundSize:'24px 24px'}}/>
+<div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+<h2 className="rv font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-white leading-tight tracking-tight mb-4">Ready to Transform Your Business?</h2>
+<p className="rv rd1 text-base text-white/80 mb-8 max-w-xl mx-auto">Let's build something extraordinary together. Get in touch and let our team craft the perfect growth strategy for you.</p>
+<div className="rv rd2 flex flex-wrap justify-center gap-4">
+<a href="#contact" className="inline-flex items-center gap-2 bg-white text-accent-600 font-bold px-8 py-4 rounded-xl hover:bg-surface-50 transition-all shadow-xl hover:-translate-y-0.5">Start Your Journey<I n="arrowR" s={18}/></a>
+<a href="#services" className="inline-flex items-center gap-2 border-2 border-white/40 text-white font-semibold px-8 py-4 rounded-xl hover:border-white transition-all hover:-translate-y-0.5">Explore Services</a>
+</div></div></section>
+</div>)}
+
+/* ══════════ ABOUT PAGE ══════════ */
+function AboutPage({d}){
+return(<div>
+<PageHero title="About Open Verse" subtitle="We make your business growth a reality through data-driven strategies and passionate execution."/>
+<section className="py-16 lg:py-24 bg-surface-50">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center mb-20">
+<div className="rv"><div className="rounded-3xl overflow-hidden shadow-2xl shadow-navy-700/8"><img src={d.about.image} alt="About Open Verse" className="w-full aspect-[4/3] object-cover" loading="lazy"/></div></div>
+<div>
+<p className="rv text-sm font-semibold text-accent-600 uppercase tracking-wider mb-2">{d.about.preheading}</p>
+<h2 className="rv rd1 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-navy-800 leading-tight tracking-tight mb-5">{d.about.heading}</h2>
+<p className="rv rd2 text-gray-500 leading-relaxed mb-6">{d.about.description}</p>
+<ul className="rv rd3 space-y-3 mb-6">{d.about.bullets.map((b,i)=><li key={i} className="flex items-start gap-3"><span className="mt-0.5 flex-shrink-0 w-6 h-6 rounded-full bg-accent-50 flex items-center justify-center"><I n="check" s={13} c="text-accent-600" sw={3}/></span><span className="text-gray-700 font-medium">{b}</span></li>)}</ul>
+</div></div>
+
+{/* Mission / Vision / Values */}
+<div className="mb-20">
+<div className="text-center mb-12"><h2 className="rv font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-navy-800 leading-tight">What Drives Us</h2></div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div className="rv bg-white rounded-2xl p-8 shadow-md border border-surface-200 clift text-center">
+<div className="w-14 h-14 rounded-2xl bg-navy-50 flex items-center justify-center mx-auto mb-5"><I n="target" s={26} c="text-navy-600"/></div>
+<h3 className="text-lg font-bold text-navy-800 mb-3">Our Mission</h3>
+<p className="text-sm text-gray-500 leading-relaxed">{d.about.mission}</p></div>
+<div className="rv rd1 bg-white rounded-2xl p-8 shadow-md border border-surface-200 clift text-center">
+<div className="w-14 h-14 rounded-2xl bg-accent-50 flex items-center justify-center mx-auto mb-5"><I n="zap" s={26} c="text-accent-600"/></div>
+<h3 className="text-lg font-bold text-navy-800 mb-3">Our Vision</h3>
+<p className="text-sm text-gray-500 leading-relaxed">{d.about.vision}</p></div>
+<div className="rv rd2 bg-white rounded-2xl p-8 shadow-md border border-surface-200 clift text-center">
+<div className="w-14 h-14 rounded-2xl bg-navy-50 flex items-center justify-center mx-auto mb-5"><I n="heart" s={26} c="text-navy-600"/></div>
+<h3 className="text-lg font-bold text-navy-800 mb-3">Our Values</h3>
+<ul className="text-sm text-gray-500 leading-relaxed space-y-2">{d.about.values.map((v,i)=><li key={i} className="flex items-center gap-2 justify-center"><I n="check" s={12} c="text-accent-500" sw={3}/>{v}</li>)}</ul></div>
+</div></div>
+
+{/* Full Team */}
+<div className="mb-16">
+<div className="text-center max-w-2xl mx-auto mb-12"><p className="rv text-sm font-semibold text-accent-600 uppercase tracking-wider mb-2">{d.team.preheading}</p><h2 className="rv rd1 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-navy-800 leading-tight">{d.team.heading}</h2></div>
+<div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-6">
+{d.team.members.map((m,i)=><div key={i} className={`rv rd${Math.min((i%6)+1,6)} group bg-white rounded-2xl overflow-hidden shadow-md border border-surface-200 clift`}>
+<div className="relative overflow-hidden"><img src={m.image} alt={m.name} className="w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy"/><div className="absolute inset-0 bg-gradient-to-t from-navy-800/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"/></div>
+<div className="p-4 text-center"><h3 className="font-bold text-navy-800 text-sm leading-snug">{m.name}</h3><p className="text-xs text-gray-400 mt-1">{m.role}</p></div></div>)}
+</div></div>
+</div></section>
+
+{/* Stats */}
+<section className="py-16 lg:py-20 bg-gradient-to-br from-navy-800 via-navy-700 to-navy-800 relative overflow-hidden">
+<div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage:'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',backgroundSize:'30px 30px'}}/>
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4 lg:gap-5">
+{d.stats.map((s,i)=><div key={i} className={`rv rd${Math.min(i+1,6)} rounded-2xl p-6 text-center ${s.profile?'bg-white/10 backdrop-blur-sm border border-white/12':'bg-white/5 border border-white/8'}`}>
+{s.profile&&<div className="flex justify-center mb-3"><img src={s.profile.image} alt={s.profile.name} className="w-14 h-14 rounded-full object-cover ring-2 ring-accent-400/40" loading="lazy"/></div>}
+<div className="sv text-3xl lg:text-4xl text-white mb-1.5">{s.value}</div>
+<p className="text-sm text-white/55 leading-snug">{s.label}</p>
+</div>)}
+</div></div></section>
+</div>)}
+
+/* ══════════ SERVICES PAGE ══════════ */
+function ServicesPage({d}){
+return(<div>
+<PageHero title="Our Services" subtitle="Comprehensive digital marketing solutions tailored to accelerate your business growth."/>
+<section className="py-16 lg:py-24 bg-surface-50">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div className="text-center max-w-2xl mx-auto mb-12"><p className="rv text-sm font-semibold text-accent-600 uppercase tracking-wider mb-2">{d.services.preheading}</p><h2 className="rv rd1 font-display text-[clamp(1.75rem,4vw,2.75rem)] font-bold text-navy-800 leading-tight">{d.services.heading}</h2></div>
+
+{/* Full Services Grid */}
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+{d.services.items.map((s,i)=><div key={i} className={`rv rd${Math.min((i%6)+1,6)} group bg-white rounded-2xl overflow-hidden shadow-md border border-surface-200 clift`}>
+<div className="relative overflow-hidden"><img src={s.image} alt={s.title} className="w-full aspect-[3/2] object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy"/><div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm text-navy-700 w-10 h-10 rounded-xl flex items-center justify-center shadow-sm"><I n={s.icon} s={20}/></div></div>
+<div className="p-6"><h3 className="text-lg font-bold text-navy-800 mb-2">{s.title}</h3><p className="text-sm text-gray-500 leading-relaxed">{s.description}</p></div></div>)}
+</div>
+
+{/* Process */}
+<div className="mb-20">
+<div className="text-center mb-12"><h2 className="rv font-display text-[clamp(1.75rem,4vw,2.5rem)] font-bold text-navy-800 leading-tight">How We Work</h2></div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+{d.services.process.map((p,i)=><div key={i} className={`rv rd${Math.min(i+1,6)} relative bg-white rounded-2xl p-8 shadow-md border border-surface-200 clift`}>
+<div className="sv text-5xl gtxt mb-4">{p.step}</div>
+<h3 className="text-lg font-bold text-navy-800 mb-3">{p.title}</h3>
+<p className="text-sm text-gray-500 leading-relaxed">{p.description}</p>
+{i<2&&<div className="hidden md:block absolute top-1/2 -right-3 w-6 h-6 text-surface-300"><I n="chevronR" s={24}/></div>}
+</div>)}
+</div></div>
+
+{/* Features */}
+<div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6">
+{d.services.features.map((f,i)=><div key={i} className={`rv rd${Math.min(i+1,6)} bg-white rounded-2xl p-6 lg:p-8 shadow-md border border-surface-200 clift`}>
+<div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center mb-4"><I n={f.icon} s={24} c="text-accent-600"/></div>
+<h3 className="text-lg font-bold text-navy-800 mb-2">{f.title}</h3>
+<p className="text-sm text-gray-500 leading-relaxed">{f.description}</p></div>)}
+</div>
+</div></section>
+
+{/* CTA */}
+<section className="py-16 lg:py-20 bg-gradient-to-r from-navy-700 via-navy-600 to-navy-700 relative overflow-hidden">
+<div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage:'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',backgroundSize:'24px 24px'}}/>
+<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+<h2 className="rv font-display text-[clamp(1.5rem,3.5vw,2.5rem)] font-bold text-white leading-tight mb-4">Let's Discuss Your Project</h2>
+<p className="rv rd1 text-white/65 mb-8">Every business is unique. Let us create a custom strategy that fits your goals and budget perfectly.</p>
+<a href="#contact" className="rv rd2 inline-flex items-center gap-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white font-bold px-8 py-4 rounded-xl hover:from-accent-600 hover:to-accent-700 transition-all shadow-xl hover:-translate-y-0.5">Get a Free Consultation<I n="arrowR" s={18}/></a>
+</div></section>
+</div>)}
+
+/* ══════════ CONTACT PAGE ══════════ */
+function ContactPage({d}){
+const[f,sf]=useState({name:'',email:'',subject:'',message:''});
+const[errors,se]=useState({});
+const[sent,ss]=useState(false);
+const[loading,sl]=useState(false);
+
+const validate=()=>{const e={};if(!f.name.trim())e.name="Name is required";if(!f.email.trim())e.email="Email is required";else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email))e.email="Invalid email address";if(!f.subject.trim())e.subject="Subject is required";if(!f.message.trim())e.message="Message is required";return e};
+
+const handleSubmit=e=>{e.preventDefault();const v=validate();if(Object.keys(v).length){se(v);return}se({});sl(true);setTimeout(()=>{sl(false);ss(true);sf({name:'',email:'',subject:'',message:''});setTimeout(()=>ss(false),5000)},1200)};
+
+const handleChange=(field,val)=>{sf(p=>({...p,[field]:val}));if(errors[field])se(p=>{const n={...p};delete n[field];return n})};
+
+const inpCls=(field)=>`w-full px-4 py-3 rounded-xl border ${errors[field]?'border-red-400 bg-red-50/50':'border-surface-300 bg-white'} text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-accent-500/30 focus:border-accent-500 transition-all`;
+
+return(<div>
+<PageHero title="Get In Touch" subtitle="We'd love to hear from you. Reach out and let's start building something great together."/>
+<section className="py-16 lg:py-24 bg-surface-50">
+<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
+{/* Form */}
+<div className="lg:col-span-3">
+<div className="rv bg-white rounded-3xl p-8 lg:p-10 shadow-lg border border-surface-200">
+<h2 className="text-xl font-bold text-navy-800 mb-6">Send Us a Message</h2>
+{sent&&<div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3"><I n="check" s={20} c="text-green-600" sw={3}/><span className="text-sm font-semibold text-green-700">Message sent successfully! We'll get back to you soon.</span></div>}
+<form onSubmit={handleSubmit} noValidate className="space-y-5">
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+<div><label className="block text-sm font-semibold text-navy-700 mb-1.5" htmlFor="name">Full Name</label><input id="name" type="text" value={f.name} onChange={e=>handleChange('name',e.target.value)} className={inpCls('name')} placeholder="John Doe"/> {errors.name&&<p className="mt-1 text-xs text-red-500">{errors.name}</p>}</div>
+<div><label className="block text-sm font-semibold text-navy-700 mb-1.5" htmlFor="email">Email Address</label><input id="email" type="email" value={f.email} onChange={e=>handleChange('email',e.target.value)} className={inpCls('email')} placeholder="john@example.com"/> {errors.email&&<p className="mt-1 text-xs text-red-500">{errors.email}</p>}</div>
+</div>
+<div><label className="block text-sm font-semibold text-navy-700 mb-1.5" htmlFor="subject">Subject</label><input id="subject" type="text" value={f.subject} onChange={e=>handleChange('subject',e.target.value)} className={inpCls('subject')} placeholder="How can we help?"/> {errors.subject&&<p className="mt-1 text-xs text-red-500">{errors.subject}</p>}</div>
+<div><label className="block text-sm font-semibold text-navy-700 mb-1.5" htmlFor="message">Message</label><textarea id="message" rows={5} value={f.message} onChange={e=>handleChange('message',e.target.value)} className={`${inpCls('message')} resize-none`} placeholder="Tell us about your project..."/> {errors.message&&<p className="mt-1 text-xs text-red-500">{errors.message}</p>}</div>
+<button type="submit" disabled={loading} className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-accent-500 to-accent-600 text-white font-semibold px-8 py-3.5 rounded-xl hover:from-accent-600 hover:to-accent-700 transition-all shadow-lg shadow-accent-500/20 disabled:opacity-70 disabled:cursor-not-allowed">
+{loading?'Sending...':'Send Message'} {!loading&&<I n="send" s={16}/>}
+</button>
+</form></div></div>
+
+{/* Contact Info */}
+<div className="lg:col-span-2 space-y-6">
+<div className="rv bg-white rounded-2xl p-6 shadow-md border border-surface-200 clift">
+<div className="flex items-start gap-4"><div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center flex-shrink-0"><I n="mail" s={22} c="text-accent-600"/></div><div><h3 className="font-bold text-navy-800 mb-1">Email Us</h3><a href={`mailto:${d.footer.contact.email}`} className="text-sm text-gray-500 hover:text-accent-600 transition-colors break-all">{d.footer.contact.email}</a></div></div></div>
+<div className="rv rd1 bg-white rounded-2xl p-6 shadow-md border border-surface-200 clift">
+<div className="flex items-start gap-4"><div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center flex-shrink-0"><I n="phone" s={22} c="text-accent-600"/></div><div><h3 className="font-bold text-navy-800 mb-1">Call Us</h3><a href={`tel:${d.footer.contact.phone.replace(/\s/g,'')}`} className="text-sm text-gray-500 hover:text-accent-600 transition-colors">{d.footer.contact.phone}</a></div></div></div>
+<div className="rv rd2 bg-white rounded-2xl p-6 shadow-md border border-surface-200 clift">
+<div className="flex items-start gap-4"><div className="w-12 h-12 rounded-xl bg-accent-50 flex items-center justify-center flex-shrink-0"><I n="mapPin" s={22} c="text-accent-600"/></div><div><h3 className="font-bold text-navy-800 mb-1">Visit Us</h3><p className="text-sm text-gray-500 leading-relaxed">{d.footer.contact.address}</p></div></div></div>
+<div className="rv rd3 bg-white rounded-2xl p-6 shadow-md border border-surface-200 clift">
+<div className="flex items-start gap-4"><div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0"><I n="whatsapp" s={22} c="text-green-600"/></div><div><h3 className="font-bold text-navy-800 mb-1">WhatsApp</h3><a href={d.footer.whatsapp.url} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-green-600 transition-colors">{d.footer.whatsapp.label}</a></div></div></div>
+<div className="rv rd4 bg-white rounded-2xl p-6 shadow-md border border-surface-200">
+<h3 className="font-bold text-navy-800 mb-4">Follow Us</h3>
+<div className="flex items-center gap-3">{d.footer.social.map((s,i)=><a key={i} href={s.url} className="w-11 h-11 rounded-xl bg-surface-100 flex items-center justify-center hover:bg-navy-700 hover:text-white text-gray-500 transition-all" aria-label={s.name}><I n={{Facebook:"facebook",Linkedin:"linkedin",Instagram:"instagram"}[s.name]||"facebook"} s={18}/></a>)}</div>
+</div>
+</div>
+</div></div></section>
+</div>)}
+
+/* ══════════ APP ══════════ */
+function App(){
+useReveal();
+const page=useRouter();
+const d=siteData;
+const pages={home:<HomePage d={d}/>,about:<AboutPage d={d}/>,services:<ServicesPage d={d}/>,contact:<ContactPage d={d}/>};
+return(<React.Fragment>
+<AnnouncementBar data={d.announcement}/>
+<Navbar data={d.navbar} page={page}/>
+<main>{pages[page]||pages.home}</main>
+<Footer data={d.footer}/>
+<WAFloat url={d.footer.whatsapp.url}/>
+</React.Fragment>)}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
